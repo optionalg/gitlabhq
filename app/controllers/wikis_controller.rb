@@ -4,7 +4,7 @@ class WikisController < ProjectResourceController
   before_filter :authorize_admin_wiki!, only: :destroy
 
   def pages
-    @wiki_pages = @project.wikis.group(:slug).ordered
+    @wiki_pages = @project.wikis.where("id IN (SELECT MAX(id) FROM wikis WHERE project_id = #{@project.id} GROUP BY slug)").ordered
   end
 
   def show
